@@ -180,32 +180,19 @@ cat> /usr/local/etc/xray/none.json << END
   },
   "inbounds": [
     {
-      "listen": "127.0.0.1",
-      "port": 10085,
-      "protocol": "dokodemo-door",
-      "settings": {
-        "address": "127.0.0.1"
-      },
-      "tag": "api"
-    },
-    {
-     "listen": "127.0.0.1",
-     "port": "23456",
+      "port": 8800,
       "protocol": "vmess",
       "settings": {
         "clients": [
           {
             "id": "${uuid}",
-            "alterId": 0,
-            "email": ""
+            "alterId": 0
 #none
           }
-        ],
-        "decryption": "none"
+        ]
       },
       "streamSettings": {
         "network": "ws",
-	"security": "none",
         "wsSettings": {
           "path": "/vmess-ntls",
           "headers": {
@@ -224,10 +211,11 @@ cat> /usr/local/etc/xray/none.json << END
           "http",
           "tls"
         ]
-      }
+      },
+      "domain": "yes.harithwyd.xyz"
     }
   ],
-"outbounds": [
+  "outbounds": [
     {
       "protocol": "freedom",
       "settings": {}
@@ -261,13 +249,6 @@ cat> /usr/local/etc/xray/none.json << END
         "outboundTag": "blocked"
       },
       {
-        "inboundTag": [
-          "api"
-        ],
-        "outboundTag": "api",
-        "type": "field"
-      },
-      {
         "type": "field",
         "outboundTag": "blocked",
         "protocol": [
@@ -275,27 +256,6 @@ cat> /usr/local/etc/xray/none.json << END
         ]
       }
     ]
-  },
-  "stats": {},
-  "api": {
-    "services": [
-      "StatsService"
-    ],
-    "tag": "api"
-  },
-  "policy": {
-    "levels": {
-      "0": {
-        "statsUserDownlink": true,
-        "statsUserUplink": true
-      }
-    },
-    "system": {
-      "statsInboundUplink": true,
-      "statsInboundDownlink": true,
-      "statsOutboundUplink" : true,
-      "statsOutboundDownlink" : true
-    }
   }
 }
 END
@@ -417,55 +377,38 @@ cat> /usr/local/etc/xray/vnone.json << END
   },
   "inbounds": [
     {
-      "listen": "127.0.0.1",
-      "port": 10085,
-      "protocol": "dokodemo-door",
-      "settings": {
-        "address": "127.0.0.1"
-      },
-      "tag": "api"
-    },
-    {
-     "listen": "127.0.0.1",
-     "port": "14016",
-      "protocol": "vless",
-      "settings": {
-        "clients": [
-          {
-            "id": "${uuid}",
-            "level": 0,
-            "email": ""
+            "port": "80",
+            "protocol": "vless",
+            "settings": {
+            "clients": [
+                {
+                  "id": "${uuid}"
 #none
-          }
-        ],
-        "decryption": "none"
-      },
-      "encryption": "none",
-      "streamSettings": {
-        "network": "ws",
-	"security": "none",
-        "wsSettings": {
-          "path": "/vless-ntls",
-          "headers": {
-            "Host": ""
-          }
+                }
+            ],
+            "decryption": "none"
          },
-        "quicSettings": {},
-        "sockopt": {
-          "mark": 0,
-          "tcpFastOpen": true
-        }
-      },
-      "sniffing": {
-        "enabled": true,
-        "destOverride": [
-          "http",
-          "tls"
-        ]
-      }
-    }
-  ],
-"outbounds": [
+         "streamSettings": {
+            "network": "ws",
+            "security": "none",
+            "wsSettings": {
+            "path": "/vless-ntls",
+            "headers": {
+                "Host": ""
+               }
+            },
+            "quicSettings": {}
+          },
+          "sniffing": {
+              "enabled": true,
+              "destOverride": [
+                 "http",
+                 "tls"
+             ]
+          }
+       }
+    ],
+    "outbounds": [
     {
       "protocol": "freedom",
       "settings": {}
@@ -530,9 +473,7 @@ cat> /usr/local/etc/xray/vnone.json << END
     },
     "system": {
       "statsInboundUplink": true,
-      "statsInboundDownlink": true,
-      "statsOutboundUplink" : true,
-      "statsOutboundDownlink" : true
+      "statsInboundDownlink": true
     }
   }
 }
@@ -641,234 +582,6 @@ cat> /usr/local/etc/xray/trojanws.json << END
   }
 }
 END
-
-# // INSTALLING TROJAN WS NONE TLS
-cat > /usr/local/etc/xray/trnone.json << END
-{
-"log": {
-        "access": "/var/log/xray/access3.log",
-        "error": "/var/log/xray/error.log",
-        "loglevel": "info"
-    },
-  "inbounds": [
-    {
-      "listen": "127.0.0.1",
-      "port": 10085,
-      "protocol": "dokodemo-door",
-      "settings": {
-        "address": "127.0.0.1"
-      },
-      "tag": "api"
-    },
-    {
-      "listen": "127.0.0.1",
-      "port": "25432",
-      "protocol": "trojan",
-      "settings": {
-        "clients": [
-          {
-            "password": "${uuid}",
-            "level": 0,
-            "email": ""
-#trnone
-          }
-        ],
-        "decryption": "none"
-      },
-            "streamSettings": {
-              "network": "ws",
-              "security": "none",
-              "wsSettings": {
-                    "path": "/trojan-ntls",
-                    "headers": {
-                    "Host": ""
-                    }
-                }
-            }
-        }
-    ],
-"outbounds": [
-    {
-      "protocol": "freedom",
-      "settings": {}
-    },
-    {
-      "protocol": "blackhole",
-      "settings": {},
-      "tag": "blocked"
-    }
-  ],
-  "routing": {
-    "rules": [
-      {
-        "type": "field",
-        "ip": [
-          "0.0.0.0/8",
-          "10.0.0.0/8",
-          "100.64.0.0/10",
-          "169.254.0.0/16",
-          "172.16.0.0/12",
-          "192.0.0.0/24",
-          "192.0.2.0/24",
-          "192.168.0.0/16",
-          "198.18.0.0/15",
-          "198.51.100.0/24",
-          "203.0.113.0/24",
-          "::1/128",
-          "fc00::/7",
-          "fe80::/10"
-        ],
-        "outboundTag": "blocked"
-      },
-      {
-        "inboundTag": [
-          "api"
-        ],
-        "outboundTag": "api",
-        "type": "field"
-      },
-      {
-        "type": "field",
-        "outboundTag": "blocked",
-        "protocol": [
-          "bittorrent"
-        ]
-      }
-    ]
-  },
-  "stats": {},
-  "api": {
-    "services": [
-      "StatsService"
-    ],
-    "tag": "api"
-  },
-  "policy": {
-    "levels": {
-      "0": {
-        "statsUserDownlink": true,
-        "statsUserUplink": true
-      }
-    },
-    "system": {
-      "statsInboundUplink": true,
-      "statsInboundDownlink": true,
-      "statsOutboundUplink" : true,
-      "statsOutboundDownlink" : true
-    }
-  }
-}
-END
-
-# // INSTALLING TROJAN TCP
-cat > /usr/local/etc/xray/trojan.json << END
-{
-  "log": {
-    "access": "/var/log/xray/access4.log",
-    "error": "/var/log/xray/error.log",
-    "loglevel": "info"
-       },
-    "inbounds": [
-        {
-            "port": 1310,
-            "listen": "127.0.0.1",
-            "protocol": "trojan",
-            "settings": {
-                "clients": [
-                    {
-                        "id": "${uuid}",
-                        "password": "xxxxx"
-#tr
-                    }
-                ],
-                "fallbacks": [
-                    {
-                        "dest": 80
-                    }
-                ]
-            },
-            "streamSettings": {
-                "network": "tcp",
-                "security": "none",
-                "tcpSettings": {
-                    "acceptProxyProtocol": true
-                }
-            }
-        }
-    ],
-    "outbounds": [
-    {
-      "protocol": "freedom",
-      "settings": {}
-    },
-    {
-      "protocol": "blackhole",
-      "settings": {},
-      "tag": "blocked"
-    }
-  ],
-  "routing": {
-    "rules": [
-      {
-        "type": "field",
-        "ip": [
-          "0.0.0.0/8",
-          "10.0.0.0/8",
-          "100.64.0.0/10",
-          "169.254.0.0/16",
-          "172.16.0.0/12",
-          "192.0.0.0/24",
-          "192.0.2.0/24",
-          "192.168.0.0/16",
-          "198.18.0.0/15",
-          "198.51.100.0/24",
-          "203.0.113.0/24",
-          "::1/128",
-          "fc00::/7",
-          "fe80::/10"
-        ],
-        "outboundTag": "blocked"
-      },
-      {
-        "inboundTag": [
-          "api"
-        ],
-        "outboundTag": "api",
-        "type": "field"
-      },
-      {
-        "type": "field",
-        "outboundTag": "blocked",
-        "protocol": [
-          "bittorrent"
-        ]
-      }
-    ]
-  },
-  "stats": {},
-  "api": {
-    "services": [
-      "StatsService"
-    ],
-    "tag": "api"
-  },
-  "policy": {
-    "levels": {
-      "0": {
-        "statsUserDownlink": true,
-        "statsUserUplink": true
-      }
-    },
-    "system": {
-      "statsInboundUplink": true,
-      "statsInboundDownlink": true,
-      "statsOutboundUplink" : true,
-      "statsOutboundDownlink" : true
-    }
-  }
-}
-END
-
 
 # // INSTALLING VLESS TCP XTLS
 cat > /usr/local/etc/xray/xtls.json << END
@@ -1006,41 +719,7 @@ cat >/etc/nginx/conf.d/xray.conf <<EOF
              root /usr/share/nginx/html;
         }
 EOF
-sed -i '$ ilocation = /vless-ntls' /etc/nginx/conf.d/xray.conf
-sed -i '$ i{' /etc/nginx/conf.d/xray.conf
-sed -i '$ iproxy_redirect off;' /etc/nginx/conf.d/xray.conf
-sed -i '$ iproxy_pass http://127.0.0.1:14016;' /etc/nginx/conf.d/xray.conf
-sed -i '$ iproxy_http_version 1.1;' /etc/nginx/conf.d/xray.conf
-sed -i '$ iproxy_set_header X-Real-IP \$remote_addr;' /etc/nginx/conf.d/xray.conf
-sed -i '$ iproxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;' /etc/nginx/conf.d/xray.conf
-sed -i '$ iproxy_set_header Upgrade \$http_upgrade;' /etc/nginx/conf.d/xray.conf
-sed -i '$ iproxy_set_header Connection "upgrade";' /etc/nginx/conf.d/xray.conf
-sed -i '$ iproxy_set_header Host \$http_host;' /etc/nginx/conf.d/xray.conf
-sed -i '$ i}' /etc/nginx/conf.d/xray.conf
 
-sed -i '$ ilocation = /vmess-ntls' /etc/nginx/conf.d/xray.conf
-sed -i '$ i{' /etc/nginx/conf.d/xray.conf
-sed -i '$ iproxy_redirect off;' /etc/nginx/conf.d/xray.conf
-sed -i '$ iproxy_pass http://127.0.0.1:23456;' /etc/nginx/conf.d/xray.conf
-sed -i '$ iproxy_http_version 1.1;' /etc/nginx/conf.d/xray.conf
-sed -i '$ iproxy_set_header X-Real-IP \$remote_addr;' /etc/nginx/conf.d/xray.conf
-sed -i '$ iproxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;' /etc/nginx/conf.d/xray.conf
-sed -i '$ iproxy_set_header Upgrade \$http_upgrade;' /etc/nginx/conf.d/xray.conf
-sed -i '$ iproxy_set_header Connection "upgrade";' /etc/nginx/conf.d/xray.conf
-sed -i '$ iproxy_set_header Host \$http_host;' /etc/nginx/conf.d/xray.conf
-sed -i '$ i}' /etc/nginx/conf.d/xray.conf
-
-sed -i '$ ilocation = /trojan-ntls' /etc/nginx/conf.d/xray.conf
-sed -i '$ i{' /etc/nginx/conf.d/xray.conf
-sed -i '$ iproxy_redirect off;' /etc/nginx/conf.d/xray.conf
-sed -i '$ iproxy_pass http://127.0.0.1:25432;' /etc/nginx/conf.d/xray.conf
-sed -i '$ iproxy_http_version 1.1;' /etc/nginx/conf.d/xray.conf
-sed -i '$ iproxy_set_header X-Real-IP \$remote_addr;' /etc/nginx/conf.d/xray.conf
-sed -i '$ iproxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;' /etc/nginx/conf.d/xray.conf
-sed -i '$ iproxy_set_header Upgrade \$http_upgrade;' /etc/nginx/conf.d/xray.conf
-sed -i '$ iproxy_set_header Connection "upgrade";' /etc/nginx/conf.d/xray.conf
-sed -i '$ iproxy_set_header Host \$http_host;' /etc/nginx/conf.d/xray.conf
-sed -i '$ i}' /etc/nginx/conf.d/xray.conf
 
 sed -i '$ ilocation /' /etc/nginx/conf.d/xray.conf
 sed -i '$ i{' /etc/nginx/conf.d/xray.conf
